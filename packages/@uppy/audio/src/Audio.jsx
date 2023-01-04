@@ -9,6 +9,8 @@ import PermissionsScreen from './PermissionsScreen.jsx'
 import locale from './locale.js'
 
 import packageJson from '../package.json'
+import { Mp3MediaRecorder } from 'mp3-mediarecorder';
+import Mp3RecorderWorker from 'workerize-loader!./worker';
 
 /**
  * Audio recording plugin
@@ -124,7 +126,9 @@ export default class Audio extends UIPlugin {
   #startRecording = () => {
     // only used if supportsMediaRecorder() returned true
     // eslint-disable-next-line compat/compat
-    this.#recorder = new MediaRecorder(this.#stream)
+    this.#recorder = new Mp3MediaRecorder(this.#stream, {
+      worker: Mp3RecorderWorker()
+    })
     this.#recordingChunks = []
     let stoppingBecauseOfMaxSize = false
     this.#recorder.addEventListener('dataavailable', (event) => {
